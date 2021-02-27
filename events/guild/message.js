@@ -5,6 +5,7 @@
 const config = require("../../botconfig/config.json"); //loading config file with token and prefix, and settings
 const ee = require("../../botconfig/embed.json"); //Loading all embed settings like color footertext and icon ...
 const Discord = require("discord.js"); //this is the official discord.js wrapper for the Discord Api, which we use!
+const { MessageEmbed } = require('discord.js');
 const { createBar, format, databasing, escapeRegex, isrequestchannel, getRandomInt} = require("../../handlers/functions"); //Loading all needed functions
 const requestcmd = require("../../handlers/requestcmds");
 //here the event starts
@@ -38,8 +39,8 @@ module.exports = async (client, message) => {
         if (!client.settings.get(message.guild.id, `botchannel`).includes(message.channel.id) && !message.member.hasPermission("ADMINISTRATOR")) {
           //create the info string
             let leftb = "";
-            for(let i = 0; i < client.settings.get(message.guild.id, `botchannel`).length; i++){
-                leftb  +="<#" +client.settings.get(message.guild.id, `botchannel`)[i] + "> / "
+            for(let i = 0; i < client.settings.cache.get(message.guild.id, `botchannel`).length; i++){
+                leftb  +="<#" +client.settings.cache.get(message.guild.id, `botchannel`)[i] + "> / "
             }
             //send informational message
             try{ message.react("❌"); }catch{}
@@ -69,7 +70,7 @@ module.exports = async (client, message) => {
     //get the command from the collection
     let command = client.commands.get(cmd);
     //if the command does not exist, try to get it by his alias
-    if (!command) command = client.commands.get(client.aliases.get(cmd));
+    if (!command) command = client.commands.get(client.aliases.cache.get(cmd));
     //if the command is now valid
     if (command){
         if (!client.cooldowns.has(command.name)) { //if its not in the cooldown, set it too there
